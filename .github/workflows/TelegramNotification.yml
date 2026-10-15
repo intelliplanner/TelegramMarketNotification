@@ -10,23 +10,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout repo
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      # Step 2: Setup Node.js (if Angular/React project)
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node JS
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+           node-version: 20.x
 
-      # Step 3: Install dependencies
       - name: Install dependencies
         run: npm install
-
-      # Step 4: Build project
-      - name: Build
-        run: npm run build:dev
 
       # Step 5: Deploy (example: GitHub Pages)
       - name: Deploy to GitHub Pages
