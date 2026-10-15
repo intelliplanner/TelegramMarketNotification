@@ -1,0 +1,42 @@
+name: Deploy and Notify
+
+on:
+  push:
+    branches:
+      - main   # or your deployment branch
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout repo
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Setup Node.js (if Angular/React project)
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Build project
+        run: npm run build --if-present
+
+      # Step 5: Deploy (example: GitHub Pages)
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist   # adjust to your build folder
+
+      # Step 6: Send Telegram Notification
+      - name: Notify Telegram
+        run: |
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+          -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+          -d text="✅ Deployment successful for Kesarwani Enterprises – Interior Solutions!"
