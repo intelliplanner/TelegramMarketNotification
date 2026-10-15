@@ -5,7 +5,8 @@ on:
     branches:
       - main
   schedule:
-    - cron: "*/1 * * * *"   # run every minute (UTC)
+    - cron: "30 2 * * *"   # every day at 08:00 IST
+    - cron: "30 7 * * *"   # every day at 13:00 IST
 
 jobs:
   build-deploy:
