@@ -25,7 +25,8 @@ jobs:
         run: npm install
 
       # Step 4: Build project
-        run: npm run build --if-present
+      - name: Build
+        run: npm run build:dev
 
       # Step 5: Deploy (example: GitHub Pages)
       - name: Deploy to GitHub Pages
