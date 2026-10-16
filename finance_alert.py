@@ -16,9 +16,18 @@ def get_market_data():
     return data
 
 def send_to_telegram(message):
+    if not BOT_TOKEN or not CHAT_ID:
+        raise RuntimeError(
+            "Set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in the environment."
+        )
+
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     payload = {"chat_id": CHAT_ID, "text": message}
-    requests.post(url, data=payload)
+    response = requests.post(url, data=payload, timeout=30)
+    response.raise_for_status()
+    result = response.json()
+    if not result.get("ok"):
+        raise RuntimeError(f"Telegram rejected the message: {result.get('description', 'unknown error')}")
 
 if __name__ == "__main__":
     market_data = get_market_data()
