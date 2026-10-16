@@ -5,13 +5,12 @@ on:
     branches:
       - main
   schedule:
-    - cron: "30 2 * * *"   # every day at 08:00 IST
-    - cron: "30 7 * * *"   # every day at 13:00 IST
+    - cron: "*/10 * * * *"   # every 10 minutes (UTC)
 
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
-
+    if: github.event_name == 'push'   # only run on push
     steps:
       # Step 1: Checkout repo
       - name: Checkout
@@ -24,9 +23,19 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public   # static HTML folder
 
-      # Step 3: Notify Telegram
+      # Step 3: Notify Telegram (after deploy)
       - name: Notify Telegram
         run: |
           curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+          -d chat_id=${{ secrets.TELEGRAM_CHAT_ID}} \
+          -d text="✅ Static site deployed successfully!"
+
+  alert-job:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'   # only run on cron
+    steps:
+      - name: Finance Alert
+        run: |
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
           -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-          -d text="✅ New Finance Alert Bot Run successfully!"
+          -d text="📊 Finance Alert Bot: Scheduled update at $(date -u)"
