@@ -6,7 +6,7 @@ on:
       - main
       - finance-alert
   schedule:
-    - cron: "*/10 * * * *"   # every 10 minutes (UTC)
+    - cron: "30 3 * * *"   # everyday 9 AM (IST))
 
 jobs:
   finance-alert:
